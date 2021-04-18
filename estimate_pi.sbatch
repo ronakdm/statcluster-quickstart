@@ -1,0 +1,1 @@
+srun --pty --time=<time limit in minutes> --mem-per-cpu=<memory limit in megabytes> --partition=<partition name> /bin/bash

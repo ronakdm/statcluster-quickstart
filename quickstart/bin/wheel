@@ -1,5 +1,4 @@
-#!/mnt/beegfs/homes/ronakdm/statcluster-quickstart/quickstart/bin/python2
-
+#!/mnt/beegfs/homes/ronakdm/statcluster-quickstart/quickstart/bin/python
 # -*- coding: utf-8 -*-
 import re
 import sys

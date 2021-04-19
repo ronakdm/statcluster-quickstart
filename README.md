@@ -17,3 +17,12 @@ The recommended Python environment manager for the cluster is `virtualenv`. This
 ```
 srun --pty --time=30 --mem-per-cpu=100 --partition=build /bin/bash
 ```
+
+## Examples
+
+```
+sbatch pi_single.sbatch
+sbatch pi_multi.sbatch
+sbatch --array=1-100 pi_array.sbatch
+squeue -u ronakdm
+```

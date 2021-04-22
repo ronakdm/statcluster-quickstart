@@ -8,11 +8,13 @@ A **computing cluster** is a set of computers that are connected in a way such t
 
 Users can communicate with the operating system of a "login" node using a `bash` shell. You can access this shell via Secure Shell Protocol (SSH) from your computer's terminal, after which you can run commands on the login node. The Slurm Workload Manager handles cluster management and job scheduling for the other nodes. To communicate with these nodes, we use the `sbatch` command (either within scripts or in the shell) to tell Slurm to perform operations. Files are stored in a Network File System (NFS), so they can be accessed from anywhere in the cluster. All files and directories specific to you will be stored in `/homes/<your-username>`. Read more [here](https://howto.stat.washington.edu/howto/doku.php?id=clusters)
 
-## Accessing the Cluster
+## Setup
 
-## Remote Development
+### Easy Access
 
-## Environment Setup
+### Remote Development
+
+### Environment Setup
 
 The recommended Python environment manager for the cluster is `virtualenv`. This is because `virtualenv` interacts with the built-in Python installation which is optimized for use on the cluster, whereas `conda`, for example, will use a standard Python installation. When creating a virtual environment, it is important to install packages on the `build` partition. The reason is that when a package is installed on the cluster, binaries are downloaded specifically for the hardware on which the install command is run. These files are then saved to the NFS, so that the user can access them anywhere. The `build` partition contains the oldest hardware in the cluster, and the downloaded binaries will be compatible with all of the other hardware in the cluster; this may not not be true for other partitions depending on the software. To move from a login node to a node in the `build` partition, you have to start a Slurm interactive session, which essentially allows you to run `bash` commands directly on a partition node.
 ```
@@ -30,11 +32,15 @@ deactivate
 ```
 This repo already contains the `quickstart` environment, which you can activate to run the examples. Make sure that you load the Python module before activating any virtual environments. Read more [here](https://howto.stat.washington.edu/howto/doku.php?id=virtualenv_and_pip).
 
-## Examples
+## Development
+
+### Interactive Development
+
+### Examples
 
 ```
-sbatch pi_single.sbatch
-sbatch pi_multi.sbatch
-sbatch --array=1-100 pi_array.sbatch
+sbatch examples/pi_single.sbatch
+sbatch examples/pi_multi.sbatch
+sbatch examples/pi_array.sbatch
 squeue -u <your_username>
 ```

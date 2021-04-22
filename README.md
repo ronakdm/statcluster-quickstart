@@ -1,6 +1,9 @@
 # statcluster-quickstart
 
-A quickstart guide to Python work on the University of Washington Statistics Department computing cluster. This is not meant to replace the extensive [documentation](https://howto.stat.washington.edu/howto/doku.php?id=clusters) that already exists, but to supplement it with a focus on introductory cluster computing and Python specifics.
+A quickstart guide to Python work on the University of Washington Statistics Department computing cluster. This is not meant to replace the extensive [documentation](https://howto.stat.washington.edu/howto/doku.php?id=clusters) that already exists, but instead to provide
+- background information for beginners,
+- Python-related specifics, and
+- a sequential path to go through the documentation.
 
 ## Background
 
@@ -34,9 +37,24 @@ This repo already contains the `quickstart` environment, which you can activate 
 
 ## Development
 
+There are two components to a Python job: a `.py` file that executes the desired computation, and a `.sbatch` file that tells Slurm how to schedule this computation on the cluster.
+
 ### Interactive Development
 
-### Examples
+Typically, one might want to test their `.py` file for correctness before running it in a Slurm job. The cluster is optimized to run many jobs in parallel, and it turns out that running code in any one Python environment in the cluster is quite slow. It is difficult to quickly iterate on the cluster itself. Nonetheless, after working out all of the bugs in your code on your local machine, one may still want to try the script on a cluster node to ensure that it runs in that environment. Do not do this on your login node (i.e. SSH-ing into the cluster and just running the file). Instead, move to a node in the `short` partition by starting an interactive session. We did this before on the `build` partition, which is only meant for installing packages and not for running code. You might have to adjust the time and memory limits.
+```
+# 30 minute time limit and 100MB of memory allocated.
+srun --pty --time=30 --mem-per-cpu=100 --partition=short /bin/bash
+```
+After that, if the script is quick, then you can run the following.
+```
+module load Python
+source ./<your_env_name>/bin/activate # If you are using a virtual environment.
+python <your_script.py>
+```
+If the script is not quick, then this will not be feasible and you will have to submit a job to Slurm regardless.
+
+### Example 1: 
 
 ```
 sbatch examples/pi_single.sbatch

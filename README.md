@@ -4,6 +4,7 @@ A quickstart guide to Python work on the University of Washington Statistics Dep
 - background information for beginners,
 - Python-related specifics, and
 - a sequential path to go through the documentation.
+Feedback is appreciated!
 
 ## Background
 
@@ -14,6 +15,23 @@ Users can communicate with the operating system of a "login" node using a `bash`
 ## Setup
 
 ### Easy Access
+
+To make iteration and experimentation easier, it is convenient to be able to access the cluster as quickly as possible. The first step is to make and account and get faculty sponsorship by following these [instructions](https://howto.stat.washington.edu/howto/doku.php?id=accessing_the_clusters). After this step, there are three ways to login to the cluster.
+
+1. Connect to the UW **virtual private network** (VPN), which is a software that allows you to access a private computing network via the Internet. This would involve downloading a VPN client and logging in using your UW credentials (see [this page](https://www.lib.washington.edu/help/connect/husky-onnet)). Then, to access a remote machine using SSH, you would run the following.
+```
+ssh <your_username>@<host>
+```
+A **host** is a string containing either a domain name or an IP address that identifies the computer you wish to access. to connect to the Stat cliuster, the host is `cluster.stat.washington.edu`. The username is specifed by the account you created earlier. If you are not connected to the VPN, then this host will not be recognized.
+2. First, SSH into another Stat Department machine called the "SSH" machine, identified by host `ssh.stat.washington.edu`, by running the following command. You will be prompted for your UW credentials.
+```
+ssh <your_netid>@ssh.stat.washington.edu
+```
+This machine can be accessed without using the VPN, and is already connected to the UW private network. From this machine, you can SSH directly to the cluster. You will also have to log in using your UW credentials in this step.
+```
+ssh <your_username>@ssh.stat.washington.edu
+```
+There is a way to avoid these logins. We refer to the **local** machine as the starting point, whereas the **remote** machine is the destination we want to connect to. In **key pair authentication**, we create two keys (files), a **private key** and **public key** on the remote machine. The public key is a file that contains an identifiers for the private key. The private key is then copied over to the local machine. When the local connects to the remote via SSH, the remote will recognize the private key saved on the local machine, and let it connect without logging in. To avoid all logins for this method, you must go through the process *twice* - once to authenticate the connection between `ssh.stat.washington.edu` and `cluster.stat.washington.edu`, and another time to authenticate the connection between your local machine and `ssh.stat.washington.edu`. Follow the instructions in the "Connecting From Off Campus" section of this [page](https://howto.stat.washington.edu/howto/doku.php?id=ssh_guide) in order to do this. Now you should be able to run the two commands above without having to log in either time.
 
 ### Remote Development
 
@@ -33,7 +51,7 @@ pip install --upgrade pip
 pip install <first_package> <second_package>
 deactivate
 ```
-This repo already contains the `quickstart` environment, which you can activate to run the examples. Make sure that you load the Python module before activating any virtual environments. Read more [here](https://howto.stat.washington.edu/howto/doku.php?id=virtualenv_and_pip).
+This repo already contains the `quickstart` environment, which you can activate to run the examples. Make sure that you load the Python module before activating any virtual environments. Read more about `pip` and `virtualenv` [here](https://howto.stat.washington.edu/howto/doku.php?id=virtualenv_and_pip). Read more about environment and modules [here](https://howto.stat.washington.edu/howto/doku.php?id=modules).
 
 ## Development
 
@@ -61,4 +79,6 @@ sbatch examples/pi_single.sbatch
 sbatch examples/pi_multi.sbatch
 sbatch examples/pi_array.sbatch
 squeue -u <your_username>
+squeue
+sacct
 ```

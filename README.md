@@ -1,16 +1,18 @@
 # statcluster-quickstart
 
 A quickstart guide to Python work on the University of Washington Statistics Department computing cluster. This is not meant to replace the extensive [documentation](https://howto.stat.washington.edu/howto/doku.php?id=clusters) that already exists, but instead to provide
+
 - background information for beginners,
 - Python-related specifics, and
 - a sequential path to go through the documentation.
+
 Feedback is appreciated!
 
 ## Background
 
 A **computing cluster** is a set of computers that are connected in a way such that they can operate as a single system. Individual machines are called **nodes**, of which the Statistics cluster has 66. A **job** is a unit of computation (say running some number of computer programs) which is run on the computing cluster. A **scheduler** is a software that takes a job and distributes its computation across the cluster nodes to optimize speed. The **wall time** refers to the actual time elapsed when running a job, as opposed to CPU time, which would measure the number of clock cycles of a microprocessor (i.e. the time that the CPU is actively working as measured by an internal ticker). These nodes are partitioned into seven [groups](https://howto.stat.washington.edu/howto/doku.php?id=slurm) (called partitions) that are based on wall time of the jobs being run and user access limits. 
 
-Users can communicate with the operating system of a "login" node using a `bash` shell. You can access this shell via Secure Shell Protocol (SSH) from your computer's terminal, after which you can run commands on the login node. The Slurm Workload Manager handles cluster management and job scheduling for the other nodes. To communicate with these nodes, we use the `sbatch` command (either within scripts or in the shell) to tell Slurm to perform operations. Files are stored in a Network File System (NFS), so they can be accessed from anywhere in the cluster. All files and directories specific to you will be stored in `/homes/<your-username>`. Read more [here](https://howto.stat.washington.edu/howto/doku.php?id=clusters)
+Users can communicate with the operating system of a "login" node using a `bash` shell. You can access this shell via Secure Shell Protocol (SSH) from your computer's terminal, after which you can run commands on the login node. We refer to the **local** machine as the starting point, whereas the **remote** machine is the destination we want to connect to. The Slurm Workload Manager handles job scheduling for the actual cluster nodes. To communicate with these nodes, we use the `sbatch` command (either within scripts or in the shell) to tell Slurm to perform operations. Files are stored in a Network File System (NFS), so they can be accessed from anywhere in the cluster. All files and directories specific to you will be stored in `/homes/<your-username>`. Read more [here](https://howto.stat.washington.edu/howto/doku.php?id=clusters)
 
 ## Setup
 
@@ -22,7 +24,8 @@ To make iteration and experimentation easier, it is convenient to be able to acc
 ```
 ssh <your_username>@<host>
 ```
-A **host** is a string containing either a domain name or an IP address that identifies the computer you wish to access. to connect to the Stat cliuster, the host is `cluster.stat.washington.edu`. The username is specifed by the account you created earlier. If you are not connected to the VPN, then this host will not be recognized.
+A **host** is a string containing either a domain name or an IP address that identifies the computer you wish to access. To connect to the Stat cluster, the host is `cluster.stat.washington.edu`. The username is specifed by the account you created earlier. If you are not connected to the VPN, then this host will not be recognized.
+
 2. First, SSH into another Stat Department machine called the "SSH" machine, identified by host `ssh.stat.washington.edu`, by running the following command. You will be prompted for your UW credentials.
 ```
 ssh <your_netid>@ssh.stat.washington.edu
@@ -31,7 +34,7 @@ This machine can be accessed without using the VPN, and is already connected to 
 ```
 ssh <your_username>@ssh.stat.washington.edu
 ```
-There is a way to avoid these logins. We refer to the **local** machine as the starting point, whereas the **remote** machine is the destination we want to connect to. In **key pair authentication**, we create two keys (files), a **private key** and **public key** on the remote machine. The public key is a file that contains an identifiers for the private key. The private key is then copied over to the local machine. When the local connects to the remote via SSH, the remote will recognize the private key saved on the local machine, and let it connect without logging in. To avoid all logins for this method, you must go through the process *twice* - once to authenticate the connection between `ssh.stat.washington.edu` and `cluster.stat.washington.edu`, and another time to authenticate the connection between your local machine and `ssh.stat.washington.edu`. Follow the instructions in the "Connecting From Off Campus" section of this [page](https://howto.stat.washington.edu/howto/doku.php?id=ssh_guide) in order to do this. Now you should be able to run the two commands above without having to log in either time.
+There is a way to avoid these logins. In **key pair authentication**, we create two keys (files), a **private key** and **public key** on the remote machine. The public key is a file that contains an identifiers for the private key. The private key is then copied over to the local machine. When the local connects to the remote via SSH, the remote will recognize the private key saved on the local machine, and let it connect without logging in. To avoid all logins for this method, you must go through the process *twice* - once to authenticate the connection between `ssh.stat.washington.edu` and `cluster.stat.washington.edu`, and another time to authenticate the connection between your local machine and `ssh.stat.washington.edu`. Follow the instructions in the "Connecting From Off Campus" section of this [page](https://howto.stat.washington.edu/howto/doku.php?id=ssh_guide) in order to do this. Now you should be able to run the two commands above without having to log in either time.
 
 ### Remote Development
 

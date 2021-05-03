@@ -24,7 +24,7 @@ To make iteration and experimentation easier, it is convenient to be able to acc
 ```
 ssh <your_username>@<host>
 ```
-A **host** is a string containing either a domain name or an IP address that identifies the computer you wish to access. To connect to the Stat cluster, the host is `cluster.stat.washington.edu`. The username is specifed by the account you created earlier. If you are not connected to the VPN, then this host will not be recognized.
+A **host** is a string containing either a domain name or an IP address that identifies the computer you wish to access. To connect to the Stat cluster, the host is `cluster.stat.washington.edu`. The username is specifed by the account you created earlier. If you are not connected to the VPN, then this host will not be recognized.  
 
 2. First, SSH into another Stat Department machine called the "SSH" machine, identified by host `ssh.stat.washington.edu`, by running the following command. You will be prompted for your UW credentials.
 ```
@@ -35,6 +35,20 @@ This machine can be accessed without using the VPN, and is already connected to 
 ssh <your_username>@ssh.stat.washington.edu
 ```
 There is a way to avoid these logins. In **key pair authentication**, we create two keys (files), a **private key** and **public key** on the remote machine. The public key is a file that contains an identifiers for the private key. The private key is then copied over to the local machine. When the local connects to the remote via SSH, the remote will recognize the private key saved on the local machine, and let it connect without logging in. To avoid all logins for this method, you must go through the process *twice* - once to authenticate the connection between `ssh.stat.washington.edu` and `cluster.stat.washington.edu`, and another time to authenticate the connection between your local machine and `ssh.stat.washington.edu`. Follow the instructions in the "Connecting From Off Campus" section of this [page](https://howto.stat.washington.edu/howto/doku.php?id=ssh_guide) in order to do this. Now you should be able to run the two commands above without having to log in either time.
+
+3. This is most likely the most convenient way, and requires that you already completed the key pair authentication steps in the previous bullet. Here, we basically create a **shell** command (i.e. the language that one uses to communicate a computer's operating system) that SSH's us to `ssh` and `cluster`. For most UNIX systems, `bash` is the shell language. This means that there will be a `.bashrc` file in the home directory that will be executed on startup of the terminal. you can put custom commands and other personalized configurations in this file. MacOS recently switched to the `zsh` (pronounced "zeesh") shell language, which corresponds to the `.zshrc` file for such commands. List the home directory by running the following.
+```
+cd ~
+ls -a
+```
+You should see your `.bashrc` or `.zshrc` file. Open it, and add the following line.
+```
+alias statcluster='ssh -J <your_user_name>@ssh.stat.washington.edu <your_user_name>@cluster.stat.washington.edu'
+```
+We specified a shell **alias** called `statcluster` which is similar to a variable name that stores a command. The `-J` flag on the `ssh` command stands for "jump", in the sense that we are jumping through `ssh.stat.washington.edu` to get to `cluster.stat.washington.edu`. After restaring your terminal, you should be able to access the cluster by simply running the command below.
+```
+statcluster
+```
 
 ### Remote Development
 
@@ -65,7 +79,7 @@ There are two components to a Python job: a `.py` file that executes the desired
 Typically, one might want to test their `.py` file for correctness before running it in a Slurm job. The cluster is optimized to run many jobs in parallel, and it turns out that running code in any one Python environment in the cluster is quite slow. It is difficult to quickly iterate on the cluster itself. Nonetheless, after working out all of the bugs in your code on your local machine, one may still want to try the script on a cluster node to ensure that it runs in that environment. Do not do this on your login node (i.e. SSH-ing into the cluster and just running the file). Instead, move to a node in the `short` partition by starting an interactive session. We did this before on the `build` partition, which is only meant for installing packages and not for running code. You might have to adjust the time and memory limits.
 ```
 # 30 minute time limit and 100MB of memory allocated.
-srun --pty --time=30 --mem-per-cpu=100 --partition=short /bin/bash
+srun --pty --time=90 --mem-per-cpu=100 --partition=short /bin/bash
 ```
 After that, if the script is quick, then you can run the following.
 ```

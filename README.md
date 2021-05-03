@@ -20,13 +20,17 @@ Users can communicate with the operating system of a "login" node using a `bash`
 
 To make iteration and experimentation easier, it is convenient to be able to access the cluster as quickly as possible. The first step is to make and account and get faculty sponsorship by following these [instructions](https://howto.stat.washington.edu/howto/doku.php?id=accessing_the_clusters). After this step, there are three ways to login to the cluster.
 
-1. Connect to the UW **virtual private network** (VPN), which is a software that allows you to access a private computing network via the Internet. This would involve downloading a VPN client and logging in using your UW credentials (see [this page](https://www.lib.washington.edu/help/connect/husky-onnet)). Then, to access a remote machine using SSH, you would run the following.
+#### Method 1
+
+Connect to the UW **virtual private network** (VPN), which is a software that allows you to access a private computing network via the Internet. This would involve downloading a VPN client and logging in using your UW credentials (see [this page](https://www.lib.washington.edu/help/connect/husky-onnet)). Then, to access a remote machine using SSH, you would run the following.
 ```
 ssh <your_username>@<host>
 ```
 A **host** is a string containing either a domain name or an IP address that identifies the computer you wish to access. To connect to the Stat cluster, the host is `cluster.stat.washington.edu`. The username is specifed by the account you created earlier. If you are not connected to the VPN, then this host will not be recognized.  
 
-2. First, SSH into another Stat Department machine called the "SSH" machine, identified by host `ssh.stat.washington.edu`, by running the following command. You will be prompted for your UW credentials.
+#### Method 2
+
+First, SSH into another Stat Department machine called the "SSH" machine, identified by host `ssh.stat.washington.edu`, by running the following command. You will be prompted for your UW credentials.
 ```
 ssh <your_netid>@ssh.stat.washington.edu
 ```
@@ -36,7 +40,9 @@ ssh <your_username>@ssh.stat.washington.edu
 ```
 There is a way to avoid these logins. In **key pair authentication**, we create two keys (files), a **private key** and **public key** on the remote machine. The public key is a file that contains an identifiers for the private key. The private key is then copied over to the local machine. When the local connects to the remote via SSH, the remote will recognize the private key saved on the local machine, and let it connect without logging in. To avoid all logins for this method, you must go through the process *twice* - once to authenticate the connection between `ssh.stat.washington.edu` and `cluster.stat.washington.edu`, and another time to authenticate the connection between your local machine and `ssh.stat.washington.edu`. Follow the instructions in the "Connecting From Off Campus" section of this [page](https://howto.stat.washington.edu/howto/doku.php?id=ssh_guide) in order to do this. Now you should be able to run the two commands above without having to log in either time.
 
-3. This is most likely the most convenient way, and requires that you already completed the key pair authentication steps in the previous bullet. Here, we basically create a **shell** command (i.e. the language that one uses to communicate a computer's operating system) that SSH's us to `ssh` and `cluster`. For most UNIX systems, `bash` is the shell language. This means that there will be a `.bashrc` file in the home directory that will be executed on startup of the terminal. you can put custom commands and other personalized configurations in this file. MacOS recently switched to the `zsh` (pronounced "zeesh") shell language, which corresponds to the `.zshrc` file for such commands. List the home directory by running the following.
+#### Method 3
+
+This is most likely the most convenient way, and requires that you already completed the key pair authentication steps in the previous bullet. Here, we basically create a **shell** command (i.e. the language that one uses to communicate a computer's operating system) that SSH's us to `ssh` and `cluster`. For most UNIX systems, `bash` is the shell language. This means that there will be a `.bashrc` file in the home directory that will be executed on startup of the terminal. you can put custom commands and other personalized configurations in this file. MacOS recently switched to the `zsh` (pronounced "zeesh") shell language, which corresponds to the `.zshrc` file for such commands. List the home directory by running the following.
 ```
 cd ~
 ls -a
@@ -51,6 +57,8 @@ statcluster
 ```
 
 ### Remote Development
+
+**Integrated development environments** (IDEs) are text editors with special features for code such as color coding, linting (checking for correctness and style without execution), autocomplete, and most importantly, debugging. Examples include Visual Studio Code (my favorite), PyCharm, and RStudio. My IDEs offer **remote development**, in which you use an IDE installed on your machine to edit code on a remote machine. This can be a near essential capability, because it allows you to use the IDE's debugger on code as it runs directly on the cluster (and any other machines you may work on). Take a look at your IDE's remote development and debugger instructions to add this to your workflow.
 
 ### Environment Setup
 

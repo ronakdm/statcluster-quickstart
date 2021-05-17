@@ -80,13 +80,26 @@ This repo already contains the `quickstart` environment, which you can activate 
 
 ## Development
 
-There are two components to a Python job: a `.py` file that executes the desired computation, and a `.sbatch` file that tells Slurm how to schedule this computation on the cluster.
+There are two components to a Python job: a `.py` file that executes the desired computation, and a `.sbatch` file which is a Slurm that tells Slurm how to schedule this computation on the cluster. The Slurm script is essentially a `bash` script with some additional syntax, and the Python file will be run within this script. See the the [documentation](https://howto.stat.washington.edu/howto/doku.php?id=slurm_examples) for examples of Slurm scripts (with their corresponding R files). These scripts will typically look like the following.
+```
+#!/bin/bash
+#SBATCH --flag-to-specify-some-parameter value-of-parameter # Repeat this for all parameters.
+
+module load Python
+source <path_to_my_virtual_environment>/bin/activate
+python <my_script>.py
+```
+After creating both of these files, just run the Slurm script directly on the remote machine using:
+```
+sbatch <my_script>.sbatch
+```
+Some of these parameters are subtle and essential for distributing computation correctly (see Types of Jobs below). Others are self-explanatory, and can be understood by the comments in the documentation.
 
 ### Interactive Development
 
 Typically, one might want to test their `.py` file for correctness before running it in a Slurm job. The cluster is optimized to run many jobs in parallel, and it turns out that running code in any one Python environment in the cluster is quite slow. It is difficult to quickly iterate on the cluster itself. Nonetheless, after working out all of the bugs in your code on your local machine, one may still want to try the script on a cluster node to ensure that it runs in that environment. Do not do this on your login node (i.e. SSH-ing into the cluster and just running the file). Instead, move to a node in the `short` partition by starting an interactive session. We did this before on the `build` partition, which is only meant for installing packages and not for running code. You might have to adjust the time and memory limits.
 ```
-# 30 minute time limit and 100MB of memory allocated.
+# 90 minute time limit and 100MB of memory allocated.
 srun --pty --time=90 --mem-per-cpu=100 --partition=short /bin/bash
 ```
 After that, if the script is quick, then you can run the following.
@@ -97,13 +110,38 @@ python <your_script.py>
 ```
 If the script is not quick, then this will not be feasible and you will have to submit a job to Slurm regardless.
 
-### Example 1: 
+### Types of Jobs:
 
+There are three formats for distributing computation across the cluster. They depend on the number of **threads** in your program, that is the sequences of actions that can be independently handled by the scheduler. A **single-thread program** cannot distribute any of its computation across multiple machines, whereas a **multi-threaded program** can, as there are independent computations occuring in the program. The examples below can all be found in the `examples` directory.
+
+#### Example 1: Single Job with Single-Threaded Program 
+
+This format should never be used, as it will run faster on a laptop. This is only for illustrative purposes. The pair of `pi_single.py` and `pi_single.sbatch` runs a single job that executes a single-threaded program to estimate $pi$, and dumps the result into the `out` directory. Note that the `--ntasks` (specifying the number of threads) parameter is set to `1`. Run this example on the cluster with:
 ```
 sbatch examples/pi_single.sbatch
-sbatch examples/pi_multi.sbatch
-sbatch examples/pi_array.sbatch
-squeue -u <your_username>
-squeue
-sacct
 ```
+
+#### Example 2: Array Job with Single-Threaded Program 
+
+This format uses a single-threaded program, but runs the program multiple times in on various nodes using an **array job**. Here, the scheduling is handled by Slurm. The pair `pi_array.py` and `pi_array.sbatch` accomplishes this. There are a few things to notice here.
+- In the Slurm script, the `--ntasks` parameter is still set to `1`, as this is a single-threaded program. 
+- We added the additional Slurm parameter `--array=1-20` indicating that this is an array job that will be run 20 times.
+- The variable `$SLURM_ARRAY_TASK_ID` is passed as an argument to the program, which will allow the Python file to know the index of the job being run. 
+- In Python `sys.argv` returns a list of strings containing the program name and additional arguments. Thus, we can get the job ID using `job_id = int(sys.argv[1])`. This is useful, for example, when the index corresponds to a hyperparameter setting.
+
+Run this example on the cluster with:
+```
+sbatch examples/pi_array.sbatch
+``` 
+
+#### Example 3: Single Job with Multi-Threaded Program 
+
+Finally, one may want to use a different scheduling software, such as `joblib` to handle the parallelization. This might be useful for easily using the same code on different distributed environments without additional work (say, an AWS or Azure instance). There is actually a more subtle advantage; because the cluster software is optimize to handle a few large files per node, operations involving many small files (e.g. loading up a virtual environment) are quite slow. An array job, because it runs the Slurm script many times, will end up loading the virtual enviroment for every iterate of the program. On the other hand, which using a scheduler within Python, one can load the virtual environment only once, and let `joblib` handle distribution within the program. The downside is that these types of software might need to allocate all the nodes for the multi-threaded computation before actually executing it, whereas an array job can run a single job whenever a node becomes available. This is an interesting tradeoff that exists for Python programs, but does not really exist for R. In the case of R, an array job is really the best way to do things. 
+
+The pair `pi_multi.py` and `pi_multi.sbatch` execute this. The multi-thread program is generated using `joblib`. The main thing to note is that we set the `--ntask` parameter to `100`, because this is a program with 100 threads. Run this example on the cluster with:
+```
+sbatch examples/pi_multi.sbatch
+```
+
+
+

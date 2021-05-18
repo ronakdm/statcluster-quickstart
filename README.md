@@ -1,18 +1,24 @@
 # statcluster-quickstart
 
-A quickstart guide to Python work on the University of Washington Statistics Department computing cluster. This is not meant to replace the extensive [documentation](https://howto.stat.washington.edu/howto/doku.php?id=clusters) that already exists, but instead to provide
+A quickstart guide to the University of Washington Statistics Department computing cluster. This is not meant to replace the extensive [documentation](https://howto.stat.washington.edu/howto/doku.php?id=clusters) that already exists, but instead to provide
 
-- background information for beginners,
-- Python-related specifics, and
+- ample background information for beginners,
+- Python-related specifics and best practices, and
 - a sequential path to go through the documentation.
 
 Feedback is appreciated!
+
+#### Acknowledgement
+
+This is largely a summary of countless emails between me and Asa, so a big thank you to him for all of the information.
+
+Last updated: May 18, 2021
 
 ## Background
 
 A **computing cluster** is a set of computers that are connected in a way such that they can operate as a single system. Individual machines are called **nodes**, of which the Statistics cluster has 66. A **job** is a unit of computation (say running some number of computer programs) which is run on the computing cluster. A **scheduler** is a software that takes a job and distributes its computation across the cluster nodes to optimize speed. The **wall time** refers to the actual time elapsed when running a job, as opposed to CPU time, which would measure the number of clock cycles of a microprocessor (i.e. the time that the CPU is actively working as measured by an internal ticker). These nodes are partitioned into seven [groups](https://howto.stat.washington.edu/howto/doku.php?id=slurm) (called partitions) that are based on wall time of the jobs being run and user access limits. 
 
-Users can communicate with the operating system of a "login" node using a `bash` shell. You can access this shell via Secure Shell Protocol (SSH) from your computer's terminal, after which you can run commands on the login node. We refer to the **local** machine as the starting point, whereas the **remote** machine is the destination we want to connect to. The Slurm Workload Manager handles job scheduling for the actual cluster nodes. To communicate with these nodes, we use the `sbatch` command (either within scripts or in the shell) to tell Slurm to perform operations. Files are stored in a Network File System (NFS), so they can be accessed from anywhere in the cluster. All files and directories specific to you will be stored in `/homes/<your-username>`. Read more [here](https://howto.stat.washington.edu/howto/doku.php?id=clusters)
+Users can communicate with the operating system of a "login" node using a `bash` shell. You can access this shell via Secure Shell Protocol (SSH) from your computer's terminal, after which you can run commands on the login node. We refer to the **local** machine as the starting point, whereas the **remote** machine is the destination we want to connect to. The Slurm Workload Manager handles job scheduling for the actual cluster nodes. To communicate with these nodes, we use the `sbatch` command (either within scripts or in the shell) to tell Slurm to perform operations. Files are stored in a Network File System (NFS), so they can be accessed from anywhere in the cluster. All files and directories specific to you will be stored in `/homes/<your-username>`. Read more [here](https://howto.stat.washington.edu/howto/doku.php?id=clusters).
 
 ## Setup
 
@@ -42,7 +48,7 @@ There is a way to avoid these logins. In **key pair authentication**, we create 
 
 #### Method 3
 
-This is most likely the most convenient way, and requires that you already completed the key pair authentication steps in the previous bullet. Here, we basically create a **shell** command (i.e. the language that one uses to communicate a computer's operating system) that SSH's us to `ssh` and `cluster`. For most UNIX systems, `bash` is the shell language. This means that there will be a `.bashrc` file in the home directory that will be executed on startup of the terminal. you can put custom commands and other personalized configurations in this file. MacOS recently switched to the `zsh` (pronounced "zeesh") shell language, which corresponds to the `.zshrc` file for such commands. List the home directory by running the following.
+This is most likely the most convenient way, and requires that you already completed the key pair authentication steps in the previous method. Here, we basically create a **shell** command (i.e. the language that one uses to communicate a computer's operating system) that SSH's us to `ssh` and `cluster`. For most UNIX systems, `bash` is the shell language. This means that there will be a `.bashrc` file in the home directory that will be executed on startup of the terminal. you can put custom commands and other personalized configurations in this file. MacOS recently switched to the `zsh` (pronounced "zeesh") shell language, which corresponds to the `.zshrc` file for such commands. List the home directory by running the following.
 ```
 cd ~
 ls -a
@@ -58,7 +64,7 @@ statcluster
 
 ### Remote Development
 
-**Integrated development environments** (IDEs) are text editors with special features for code such as color coding, linting (checking for correctness and style without execution), autocomplete, and most importantly, debugging. Examples include Visual Studio Code (my favorite), PyCharm, and RStudio. My IDEs offer **remote development**, in which you use an IDE installed on your machine to edit code on a remote machine. This can be a near essential capability, because it allows you to use the IDE's debugger on code as it runs directly on the cluster (and any other machines you may work on). Take a look at your IDE's remote development and debugger instructions to add this to your workflow.
+**Integrated development environments** (IDEs) are text editors with special features for code such as color coding, linting (checking for correctness and style without execution), autocomplete, and most importantly, debugging. Examples include Visual Studio Code, PyCharm, and RStudio. Many IDEs offer **remote development**, in which you use an IDE installed on your machine to edit code on a remote machine. This can be a near essential capability, because it allows you to use the IDE's debugger on code as it runs directly on the cluster (and any other machines you may work on). Take a look at your IDE's remote development and debugger instructions to add this to your workflow.
 
 ### Environment Setup
 
@@ -67,7 +73,7 @@ The recommended Python environment manager for the cluster is `virtualenv`. This
 # 30 minute time limit and 100MB of memory allocated.
 srun --pty --time=30 --mem-per-cpu=100 --partition=build /bin/bash
 ```
-After this, run the following to load the built-in Python module and create your environment. Make sure you are in the directory that you want the encvironment files to be saved in (as opposed to a `git` repo for your project, for example).
+After this, run the following to load the built-in Python module and create your environment. Make sure you are in the directory that you want the environment files to be saved in (as opposed to a `git` repo for your project, for example).
 ```
 module load Python
 virtualenv <your_env_name>
@@ -76,11 +82,11 @@ pip install --upgrade pip
 pip install <first_package> <second_package>
 deactivate
 ```
-This repo already contains the `quickstart` environment, which you can activate to run the examples. Make sure that you load the Python module before activating any virtual environments. Read more about `pip` and `virtualenv` [here](https://howto.stat.washington.edu/howto/doku.php?id=virtualenv_and_pip). Read more about environment and modules [here](https://howto.stat.washington.edu/howto/doku.php?id=modules).
+This repo already contains the `quickstart` environment, which you can activate to run the examples. Make sure that you load the Python module before activating any virtual environments. Read more about `pip` and `virtualenv` [here](https://howto.stat.washington.edu/howto/doku.php?id=virtualenv_and_pip). Read more about environment modules [here](https://howto.stat.washington.edu/howto/doku.php?id=modules).
 
 ## Development
 
-There are two components to a Python job: a `.py` file that executes the desired computation, and a `.sbatch` file which is a Slurm that tells Slurm how to schedule this computation on the cluster. The Slurm script is essentially a `bash` script with some additional syntax, and the Python file will be run within this script. See the the [documentation](https://howto.stat.washington.edu/howto/doku.php?id=slurm_examples) for examples of Slurm scripts (with their corresponding R files). These scripts will typically look like the following.
+There are two components to a Python job: a `.py` file that executes the desired computation, and a `.sbatch` file which is a script that tells Slurm how to schedule this computation on the cluster. The Slurm script is essentially a `bash` script with some additional syntax, and the Python file will be run within this script. See the the [documentation](https://howto.stat.washington.edu/howto/doku.php?id=slurm_examples) for examples of Slurm scripts (with their corresponding R files). These scripts will typically look like the following.
 ```
 #!/bin/bash
 #SBATCH --flag-to-specify-some-parameter value-of-parameter # Repeat this for all parameters.
@@ -105,7 +111,7 @@ srun --pty --time=90 --mem-per-cpu=100 --partition=short /bin/bash
 After that, if the script is quick, then you can run the following.
 ```
 module load Python
-source ./<your_env_name>/bin/activate # If you are using a virtual environment.
+source <path_to_my_virtual_environment>/bin/activate # If you are using a virtual environment.
 python <your_script.py>
 ```
 If the script is not quick, then this will not be feasible and you will have to submit a job to Slurm regardless.
@@ -116,7 +122,7 @@ There are three formats for distributing computation across the cluster. They de
 
 #### Example 1: Single Job with Single-Threaded Program 
 
-This format should never be used, as it will run faster on a laptop. This is only for illustrative purposes. The pair of `pi_single.py` and `pi_single.sbatch` runs a single job that executes a single-threaded program to estimate $pi$, and dumps the result into the `out` directory. Note that the `--ntasks` (specifying the number of threads) parameter is set to `1`. Run this example on the cluster with:
+This format should never be used, as it will run faster on a laptop. This is only for illustrative purposes. The pair of `pi_single.py` and `pi_single.sbatch` runs a single job that executes a single-threaded program to estimate `pi`, and dumps the result into the `out` directory. Note that the `--ntasks` (specifying the number of threads) parameter is set to `1`. Run this example on the cluster with:
 ```
 sbatch examples/pi_single.sbatch
 ```
@@ -136,7 +142,7 @@ sbatch examples/pi_array.sbatch
 
 #### Example 3: Single Job with Multi-Threaded Program 
 
-Finally, one may want to use a different scheduling software, such as `joblib` to handle the parallelization. This might be useful for easily using the same code on different distributed environments without additional work (say, an AWS or Azure instance). There is actually a more subtle advantage; because the cluster software is optimize to handle a few large files per node, operations involving many small files (e.g. loading up a virtual environment) are quite slow. An array job, because it runs the Slurm script many times, will end up loading the virtual enviroment for every iterate of the program. On the other hand, which using a scheduler within Python, one can load the virtual environment only once, and let `joblib` handle distribution within the program. The downside is that these types of software might need to allocate all the nodes for the multi-threaded computation before actually executing it, whereas an array job can run a single job whenever a node becomes available. This is an interesting tradeoff that exists for Python programs, but does not really exist for R. In the case of R, an array job is really the best way to do things. 
+Finally, one may want to use a different scheduling software, such as `joblib` to handle the parallelization. This might be useful for easily using the same code on different distributed environments without additional work (say, an AWS or Azure instance). There is actually a more subtle advantage; because the cluster software is optimized to handle a few large files per node, operations involving many small files (e.g. loading up a virtual environment) are quite slow. An array job, because it runs the Slurm script many times, will end up loading the virtual enviroment for every iterate of the program. On the other hand, when using a scheduler within Python, one can load the virtual environment only once, and let `joblib` handle distribution within the program. The downside is that these types of software might need to allocate all the nodes for the multi-threaded computation before actually executing it, whereas an array job can run a single job whenever a node becomes available. This is an interesting tradeoff that exists for Python programs, but does not really exist for R. In the case of R, an array job is really the best way to do things. 
 
 The pair `pi_multi.py` and `pi_multi.sbatch` execute this. The multi-thread program is generated using `joblib`. The main thing to note is that we set the `--ntask` parameter to `100`, because this is a program with 100 threads. Run this example on the cluster with:
 ```

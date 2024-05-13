@@ -12,7 +12,7 @@ Feedback is appreciated!
 
 This is largely a summary of countless emails between me and Asa, so a big thank you to him for all of the information.
 
-Last updated: May 18, 2021
+Last updated: May 13, 2024
 
 ## Background
 
@@ -42,7 +42,7 @@ ssh <your_netid>@ssh.stat.washington.edu
 ```
 This machine can be accessed without using the VPN, and is already connected to the UW private network. From this machine, you can SSH directly to the cluster. You will also have to log in using your UW credentials in this step.
 ```
-ssh <your_username>@ssh.stat.washington.edu
+ssh <your_username>@cluster.stat.washington.edu
 ```
 There is a way to avoid these logins. In **key pair authentication**, we create two keys (files), a **private key** and **public key** on the remote machine. The public key is a file that contains an identifiers for the private key. The private key is then copied over to the local machine. When the local connects to the remote via SSH, the remote will recognize the private key saved on the local machine, and let it connect without logging in. To avoid all logins for this method, you must go through the process *twice* - once to authenticate the connection between `ssh.stat.washington.edu` and `cluster.stat.washington.edu`, and another time to authenticate the connection between your local machine and `ssh.stat.washington.edu`. Follow the instructions in the "Connecting From Off Campus" section of this [page](https://howto.stat.washington.edu/howto/doku.php?id=ssh_guide) in order to do this. Now you should be able to run the two commands above without having to log in either time.
 
